@@ -8,6 +8,7 @@ import MessengerService.Model.User;
 import java.util.*;
 
 public class Messenger {
+    private String chatIdFormat = "%d_%d";
     private Map<String, Stack<PersonalMessage>> oneToOneMessages;
     private Map<Group, Stack<GroupMessage>> oneToManyMessages;
 
@@ -29,8 +30,8 @@ public class Messenger {
             groupMessages.push(groupMessage);
             oneToManyMessages.put(group, groupMessages);
         } else {
-            String senderChatId = String.format("%d_%d", sender.getId(), receiver.getId());
-            String receiverChatId = String.format("%d_%d", receiver.getId(), sender.getId());
+            String senderChatId = String.format(chatIdFormat, sender.getId(), receiver.getId());
+            String receiverChatId = String.format(chatIdFormat, receiver.getId(), sender.getId());
             Stack<PersonalMessage> personalMessages;
             PersonalMessage personalMessage = new PersonalMessage(message, new Date(), sender.getId(), receiver.getId());
             if(oneToOneMessages.containsKey(senderChatId)) {
@@ -48,7 +49,7 @@ public class Messenger {
     }
 
     public Stack<PersonalMessage> getOneToOneMessages(User currentUser, User targetUser) {
-        return oneToOneMessages.get(String.format("%d_%d", currentUser.getId(), targetUser.getId()));
+        return oneToOneMessages.get(String.format(chatIdFormat, currentUser.getId(), targetUser.getId()));
     }
 
     public Stack<GroupMessage> getOneToManyMessages(Group group) {
